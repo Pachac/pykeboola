@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pykeboola"
-version = "0.0.1"
+version = "0.0.2"
 authors = [
   { name="Tomas Pachovsky", email="pachovst@gmail.com" },
 ]
