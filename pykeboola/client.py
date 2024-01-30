@@ -1,4 +1,5 @@
-from pykeboola.jobs import Jobs
+from pykeboola.jobs import JobsClient
+from pykeboola.tables import TablesClient
 
 class Client:
     """
@@ -7,8 +8,10 @@ class Client:
     """
     base_url: str
     token: str
-    jobs: Jobs
+    jobs: JobsClient
+    tables: TablesClient
     def __init__(self, base_url: str, token: str):
-        self.base_url = base_url
+        self.base_url = base_url.rstrip('/')
         self.token = token
-        self.jobs = Jobs(base_url, token)
+        self.jobs = JobsClient(base_url, token)
+        self.tables = TablesClient(base_url, token)

@@ -1,6 +1,6 @@
 import requests
 
-class Jobs:
+class JobsClient:
     """
     Class to interact with jobs in Keboola queue.
     """
@@ -8,7 +8,7 @@ class Jobs:
     token: str
 
     def __init__(self, base_url: str, token: str):
-        self.queue_url = base_url.replace('connection', 'queue').strip('/')
+        self.queue_url = base_url.replace('connection', 'queue').rstrip('/')
         self.token = token
 
     def queue_job(self, component_id: str, configuration_id: int, variable_values: dict = None, branch_id: int = None):
