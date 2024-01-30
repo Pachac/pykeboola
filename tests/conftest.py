@@ -18,3 +18,6 @@ def token(request):
 URL = 'https://connection.eu-central-1.keboola.com/'
 JOB_ID_ERROR = 676624983
 JOB_ID_SUCCESS = 676625356
+
+TEST_TRANS_SQL = 677994256
+TEST_TRANS_PY = 677996175
