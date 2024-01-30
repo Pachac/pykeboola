@@ -14,13 +14,13 @@ class Table:
         return [column for column in self.columns if column.primary]
     
     @classmethod
-    def from_keboola(cls, json: dict):
+    def from_keboola(cls, keboola_json: dict):
         return cls(
-            name = json['displayName'],
-            schema = json['bucket']['displayName'],
-            description = next(iter([meta['value'] for meta in json.get('metadata') or [] if meta['key'] == 'KBC.description']), None),
-            row_cnt = json.get('rowsCount'),
-            columns = Column.from_column_metadata(json.get('columnMetadata'), json.get('primaryKey'))
+            name = keboola_json['displayName'],
+            schema = keboola_json['bucket']['displayName'],
+            description = next(iter([meta['value'] for meta in keboola_json.get('metadata') or [] if meta['key'] == 'KBC.description']), None),
+            row_cnt = keboola_json.get('rowsCount'),
+            columns = Column.from_column_metadata(keboola_json.get('columnMetadata'), keboola_json.get('primaryKey'))
         )
         
 @dataclass
