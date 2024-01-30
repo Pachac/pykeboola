@@ -1,16 +1,16 @@
 [build-system]
-requires = ["setuptools>=61.0"]
+requires = ["setuptools>=61.0", "requests>=2.31.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "pykeboola"
-version = "0.0.5"
+version = "0.0.6"
 authors = [
   { name="Tomas Pachovsky", email="pachovst@gmail.com" },
 ]
 description = "Python package for interacting with Keboola"
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.10.12"
 classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: MIT License",
