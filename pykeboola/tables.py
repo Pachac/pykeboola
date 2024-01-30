@@ -45,9 +45,6 @@ class Column:
                 ))
         return cols
 
-
-
-
 class TablesClient:
     url: str
     token: str
