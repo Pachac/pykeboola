@@ -18,3 +18,14 @@ def test_table_from_keboola():
     columns = Column.from_column_metadata(json_dict['columnMetadata'], json_dict['primaryKey'])
     assert table.columns == columns
     assert table.primary_keys == [columns[0]]
+
+def test_table_from_keboola_no_meta():
+    with open('tests/test_table_no_meta.json', 'r') as reader:
+        json_dict = json.loads(reader.read())
+    table = Table.from_keboola(json_dict)
+    assert table.name == 'BULK_EXEC_TEST'
+    assert table.schema == 'BULK_EXEC_TEST'
+    assert table.description == None
+    assert table.row_cnt == 1
+    assert table.columns == []
+    assert table.primary_keys == []
