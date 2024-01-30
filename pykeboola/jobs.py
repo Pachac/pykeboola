@@ -27,7 +27,7 @@ class JobsClient:
         headers = {
             'X-StorageApi-Token': self.token
         }
-        response = requests.post(f'{self.queue_job}/jobs', headers=headers, json=body)
+        response = requests.post(f'{self.queue_url}/jobs', headers=headers, json=body)
         if response.status_code >= 400:
             err = response.text
             raise requests.HTTPError(f"Failed to queue a job in Keboola. API Response: {err}")
