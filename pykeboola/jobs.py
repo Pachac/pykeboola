@@ -38,6 +38,12 @@ class JobsClient:
         """
         Checks the status of the job. Returns current status.
         """
+        return self.get_job(job_id)['status']
+    
+    def get_job(self, job_id) -> dict:
+        """
+        Gets all info about a job.
+        """
         url = f'{self.queue_url}/jobs/{job_id}'
         headers = {
             'Content-Type': 'application/json',
@@ -47,4 +53,4 @@ class JobsClient:
         if response.status_code >= 400:
             err = response.text
             raise requests.HTTPError(f"Failed to queue a job in Keboola. API Response: {err}")
-        return response.json()['status']
+        return response.json()
