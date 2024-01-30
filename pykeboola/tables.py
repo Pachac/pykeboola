@@ -15,15 +15,10 @@ class Table:
     
     @classmethod
     def from_keboola(cls, json: dict):
-        description = None
-        metadata = json.get('metadata')
-        if metadata:
-            description = next(iter([meta['value'] for meta in metadata if meta['key'] == 'KBC.description']), None)
-
         return cls(
             name = json['displayName'],
             schema = json['bucket']['displayName'],
-            description = description,
+            description = next(iter([meta['value'] for meta in json.get('metadata') or [] if meta['key'] == 'KBC.description']), None),
             row_cnt = json.get('rowsCount'),
             columns = Column.from_column_metadata(json.get('columnMetadata'), json.get('primaryKey'))
         )
