@@ -4,19 +4,21 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pykeboola"
-version = "0.0.6"
+version = "0.0.7"
 authors = [
   { name="Tomas Pachovsky", email="pachovst@gmail.com" },
 ]
 description = "Python package for interacting with Keboola"
 readme = "README.md"
-requires-python = ">=3.10.12"
+requires-python = ">=3.8"
 classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
 ]
-
+dependencies = [
+  'requests',
+]
 [project.urls]
 Homepage = "https://github.com/Pachac/pykeboola"
 Issues = "https://github.com/Pachac/pykeboola/issues"

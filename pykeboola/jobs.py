@@ -1,4 +1,5 @@
 import requests
+from typing import Dict
 
 class JobsClient:
     """
@@ -40,7 +41,7 @@ class JobsClient:
         """
         return self.get_job(job_id)['status']
     
-    def get_job(self, job_id) -> dict:
+    def get_job(self, job_id) -> Dict:
         """
         Gets all info about a job.
         """
