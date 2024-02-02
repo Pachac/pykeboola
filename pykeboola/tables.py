@@ -1,5 +1,6 @@
 import requests
 from dataclasses import dataclass, field
+from typing import List, Dict
 
 @dataclass
 class Table:
@@ -7,14 +8,14 @@ class Table:
     schema: str
     description: str = field(compare=False)
     row_cnt: str = field(default=None, compare=False)
-    columns: list = field(default_factory=list)
+    columns: List = field(default_factory=list)
 
     @property
-    def primary_keys(self) -> list: 
+    def primary_keys(self) -> List: 
         return [column for column in self.columns if column.primary]
     
     @classmethod
-    def from_keboola(cls, keboola_json: dict):
+    def from_keboola(cls, keboola_json: Dict):
         return cls(
             name = keboola_json['displayName'],
             schema = keboola_json['bucket']['displayName'],
@@ -32,7 +33,7 @@ class Column:
     length: str = field(default=None, compare=False)
 
     @classmethod
-    def from_column_metadata(cls, column_metadata, primary_columns) -> list:
+    def from_column_metadata(cls, column_metadata, primary_columns) -> List:
         cols = []
         if column_metadata:
             for name, metadata in column_metadata.items():
@@ -57,7 +58,7 @@ class TablesClient:
             'X-StorageApi-Token': self.token
         }
     
-    def get_tables(self) -> list[Table]:
+    def get_tables(self) -> List[Table]:
         response = requests.get(f"{self.url}?include=buckets,metadata,columnMetadata", headers=self.headers)
         if response.status_code == 200:
             return [Table.from_keboola(table_json) for table_json in response.json()]
