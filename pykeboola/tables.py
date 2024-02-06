@@ -30,6 +30,7 @@ class Table:
             native_types = keboola_json.get('isTyped')
         )
     
+    @classmethod
     def new_table(cls, name, schema_id, columns):
         return cls(
             id = None,
@@ -43,7 +44,7 @@ class Table:
 class Column:
     name: str
     type: str
-    descr: str = field(default=None, compare=False)
+    description: str = field(default=None, compare=False)
     primary: bool = field(default=False)
     length: str = field(default=None, compare=False)
 
@@ -56,7 +57,7 @@ class Column:
                     name = name,
                     type = next(iter([meta['value'] for meta in metadata if meta['key'] == 'KBC.datatype.basetype' and meta['provider'] == 'storage']), None),
                     length = next(iter([meta['value'] for meta in metadata if meta['key'] == 'KBC.datatype.length' and meta['provider'] == 'storage']), None),
-                    descr = next(iter([meta['value'] for meta in metadata if meta['key'] == 'KBC.description']), None),
+                    description = next(iter([meta['value'] for meta in metadata if meta['key'] == 'KBC.description']), None),
                     primary = name in primary_columns
                 ))
         elif columns:
@@ -65,7 +66,7 @@ class Column:
                     name = name,
                     type = None,
                     length = None,
-                    descr = None,
+                    description = None,
                     primary = name in primary_columns,
                 ))
         return cols
@@ -108,6 +109,7 @@ class TablesClient:
         else:
             err = response.text
             raise requests.HTTPError(f'Failed to create table in Keboola: {err}\nBody: {values}')
+            
 
     def delete_table(self, table_id):
         url = f'{self.url}/tables/{table_id}/?force=true'
@@ -117,3 +119,31 @@ class TablesClient:
         else:
             err = response.text
             raise requests.HTTPError(f'Failed to delete table {table_id} in Keboola: {err}')
+        
+    def update_table_metadata(self, table: Table):
+        url = f'{self.url}/tables/{table.id}/metadata'
+        values = {
+            'provider': 'user',
+        }
+        if table.description:
+            values['metadata'] = [
+                {
+                    'key': 'KBC.description',
+                    'value': table.description
+                }
+            ]
+
+        if table.columns:
+            values['columnsMetadata'] = {
+                column.name: [{
+                    'key': 'KBC.description', 
+                    'value': column.description
+                    }]
+                for column in table.columns}
+        
+        response = requests.post(url, headers=self.headers, json=values)
+        if response.status_code == 201:
+            return response.json()
+        else:
+            err = response.text
+            raise requests.HTTPError(f'Failed to add metadata to table in Keboola: {err}\nBody: {values}')
