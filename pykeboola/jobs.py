@@ -36,7 +36,7 @@ class JobsClient:
         
         return response.json()['id']
     
-    def check_job_status(self, job_id, queue: bool = True) -> str:
+    def check_job_status(self, job_id) -> str:
         """
         Checks the status of the job. Returns current status.
         """
