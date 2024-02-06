@@ -10,6 +10,7 @@ class JobsClient:
 
     def __init__(self, base_url: str, token: str):
         self.queue_url = base_url.replace('connection', 'queue').rstrip('/')
+        self.storage_url = f'{base_url.rstrip("/")}/v2/storage'
         self.token = token
 
     def queue_job(self, component_id: str, configuration_id: int, variable_values: dict = None, branch_id: int = None):
@@ -43,7 +44,7 @@ class JobsClient:
     
     def get_job(self, job_id) -> Dict:
         """
-        Gets all info about a job.
+        Gets all info about a queue job.
         """
         url = f'{self.queue_url}/jobs/{job_id}'
         headers = {
@@ -53,5 +54,26 @@ class JobsClient:
         response = requests.get(url, headers=headers)
         if response.status_code >= 400:
             err = response.text
-            raise requests.HTTPError(f"Failed to queue a job in Keboola. API Response: {err}")
+            raise requests.HTTPError(f"Failed to find a job in Keboola. API Response: {err}")
+        return response.json()
+    
+    def check_api_job_status(self, job_id) -> str:
+        """
+        Checks the status of the job. Returns current status.
+        """
+        return self.get_api_job(job_id)['status']
+
+    def get_api_job(self, job_id):
+        """
+        Gets all info about an API job.
+        """
+        url = f'{self.storage_url}/jobs/{job_id}'
+        headers = {
+            'Content-Type': 'application/json',
+            'X-StorageApi-Token': self.token
+        }
+        response = requests.get(url, headers=headers)
+        if response.status_code >= 400:
+            err = response.text
+            raise requests.HTTPError(f"Failed to find a job in Keboola. API Response: {err}")
         return response.json()
