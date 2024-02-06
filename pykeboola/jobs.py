@@ -57,7 +57,7 @@ class JobsClient:
             raise requests.HTTPError(f"Failed to find a job in Keboola. API Response: {err}")
         return response.json()
     
-    def check_api_job_status(self, job_id, queue: bool = True) -> str:
+    def check_api_job_status(self, job_id) -> str:
         """
         Checks the status of the job. Returns current status.
         """
