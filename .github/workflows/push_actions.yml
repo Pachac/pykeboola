@@ -38,6 +38,6 @@ jobs:
           echo "app_image_tag=$TAG" >> $GITHUB_OUTPUT
       -
         name: deploy
-        if: 'startsWith(github.ref, ''refs/tags/'') && $IS_SEMANTIC_TAG == ''true'''
+        if: 'startsWith(github.ref, ''refs/tags/'') && ${{ steps.tag.outputs.is_semantic_tag }} == ''true'''
         run: |
           twine upload dist/* -u __token__ -p ${{ secrets.PYPI_TOKEN }}
