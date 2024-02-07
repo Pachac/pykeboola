@@ -1,4 +1,4 @@
-name: 'Push Actions'
+ame: 'Push Actions'
 on: 
   - push
 jobs:
@@ -38,7 +38,7 @@ jobs:
           echo "app_image_tag=$TAG" >> $GITHUB_OUTPUT
       -
         name: deploy
-        if: 'startsWith(github.ref, ''refs/tags/'') && ${{ steps.tag.outputs.is_semantic_tag }} == ''true'''
+        if: startsWith(github.ref, 'refs/tags/') && ${{ steps.tag.outputs.is_semantic_tag }} == 'true'
         run: |
           echo ${{ steps.tag.outputs.is_semantic_tag }}
           python -m pip install twine
