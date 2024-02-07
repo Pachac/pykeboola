@@ -1,4 +1,4 @@
-ame: 'Push Actions'
+name: 'Push Actions'
 on: 
   - push
 jobs:
