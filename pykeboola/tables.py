@@ -116,8 +116,12 @@ class TablesClient:
             'X-StorageApi-Token': self.token
         }
     
-    def get_tables(self) -> List[Table]:
-        response = requests.get(f"{self.url}/tables?include=columns,buckets,metadata,columnMetadata", headers=self.headers)
+    def get_tables(self, bucket: str = None) -> List[Table]:
+        if bucket:
+            url = f"{self.url}/buckets/{bucket}/tables?include=columns,buckets,metadata,columnMetadata"
+        else:
+            url = f"{self.url}/tables?include=columns,buckets,metadata,columnMetadata"
+        response = requests.get(url, headers=self.headers)
         if response.status_code == 200:
             return [Table.from_keboola(table_json) for table_json in response.json()]
         else:
