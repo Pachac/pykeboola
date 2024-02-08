@@ -60,11 +60,13 @@ class Table:
             for col_name in other_col_dict:
                 if not col_name in self_col_dict:
                     col_dif[col_name] = 'Right Only'
-            differences['columns'] = col_dif
+            if col_dif:
+                differences['columns'] = col_dif
+            else:
+                differences.pop('columns')
         
         return differences
 
-        
 @dataclass
 class Column:
     name: str
