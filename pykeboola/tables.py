@@ -4,6 +4,25 @@ from typing import List, Dict
 
 @dataclass
 class Table:
+    """
+    Represents a table in a database.
+
+    Attributes:
+        id (str): The ID of the table.
+        name (str): The name of the table.
+        schema (str): The schema of the table.
+        schema_id (str): The ID of the schema.
+        description (str, optional): The description of the table.
+        row_cnt (str, optional): The row count of the table.
+        columns (List, optional): The list of columns in the table.
+        native_types (bool, optional): Indicates if the table has native types.
+
+    Methods:
+        primary_keys() -> List: Returns a list of primary key columns.
+        from_keboola(keboola_json: Dict) -> Table: Creates a Table instance from a Keboola JSON.
+        new_table(name, schema_id, columns) -> Table: Creates a new Table instance.
+        __sub__(other) -> Dict: Compares two tables and returns the differences.
+    """
     id: str = field(compare=False)
     name: str
     schema: str
@@ -69,6 +88,17 @@ class Table:
 
 @dataclass
 class Column:
+    """
+    Represents a column in a table.
+
+    Attributes:
+        name (str): The name of the column.
+        type (str): The data type of the column.
+        description (str, optional): The description of the column. Defaults to None.
+        primary (bool, optional): Indicates if the column is a primary key. Defaults to False.
+        length (str, optional): The length of the column. Defaults to None.
+    """
+
     name: str
     type: str
     description: str = field(default=None)
@@ -107,9 +137,29 @@ class Column:
     
 
 class TablesClient:
+    """
+    Client for interacting with tables in Keboola.
+
+    Args:
+        base_url (str): The base URL of the Keboola API.
+        token (str): The API token for authentication.
+
+    Attributes:
+        url (str): The complete URL for the Keboola storage API.
+        token (str): The API token for authentication.
+        headers (dict): The headers to be included in API requests.
+
+    Methods:
+        get_tables(bucket: str = None) -> List[Table]: Retrieves a list of tables from Keboola.
+        create_table(table: Table): Creates a new table in Keboola.
+        delete_table(table_id): Deletes a table from Keboola.
+        update_table_metadata(table: Table): Updates the metadata of a table in Keboola.
+    """
+
     url: str
     token: str
     headers: dict
+
     def __init__(self, base_url: str, token: str):
         self.token = token
         self.url = f"{base_url.rstrip('/')}/v2/storage"
@@ -119,6 +169,18 @@ class TablesClient:
         }
     
     def get_tables(self, bucket: str = None) -> List[Table]:
+        """
+        Retrieves a list of tables from Keboola.
+
+        Args:
+            bucket (str, optional): The name of the bucket to filter tables by. Defaults to None.
+
+        Returns:
+            List[Table]: A list of Table objects representing the tables retrieved from Keboola.
+
+        Raises:
+            requests.HTTPError: If the request to Keboola fails.
+        """
         if bucket:
             url = f"{self.url}/buckets/{bucket}/tables?include=columns,buckets,metadata,columnMetadata"
         else:
@@ -131,6 +193,18 @@ class TablesClient:
             raise requests.HTTPError(f'Failed to retrieve tables from Keboola: {err}')
         
     def create_table(self, table: Table):
+        """
+        Creates a new table in Keboola.
+
+        Args:
+            table (Table): The Table object representing the table to be created.
+
+        Returns:
+            str: The ID of the created table.
+
+        Raises:
+            requests.HTTPError: If the request to Keboola fails.
+        """
         url = f'{self.url}/buckets/{table.schema_id}/tables-definition'
         values = {
             "name": table.name,
@@ -151,6 +225,18 @@ class TablesClient:
             
 
     def delete_table(self, table_id):
+        """
+        Deletes a table from Keboola.
+
+        Args:
+            table_id: The ID of the table to be deleted.
+
+        Returns:
+            bool: True if the table was successfully deleted.
+
+        Raises:
+            requests.HTTPError: If the request to Keboola fails.
+        """
         url = f'{self.url}/tables/{table_id}/?force=true'
         response = requests.delete(url, headers=self.headers)
         if response.status_code == 204:
@@ -160,6 +246,18 @@ class TablesClient:
             raise requests.HTTPError(f'Failed to delete table {table_id} in Keboola: {err}')
         
     def update_table_metadata(self, table: Table):
+        """
+        Updates the metadata of a table in Keboola.
+
+        Args:
+            table (Table): The Table object representing the table to update.
+
+        Returns:
+            dict: The response JSON containing the updated metadata.
+
+        Raises:
+            requests.HTTPError: If the request to Keboola fails.
+        """
         url = f'{self.url}/tables/{table.id}/metadata'
         values = {
             'provider': 'user',
